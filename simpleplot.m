@@ -2,7 +2,7 @@
 %
 % written by Andy Reagan, 2014
 
-x = linspace(-2,2,10);
+x = linspace(0,2,10);
 y_line = sin(x)  + x.^3;
 y = y_line + randn(size(x));
 
@@ -20,3 +20,6 @@ saveas(1,'simpleplot.eps');
 % no styling, not yet supported
 svgplot('simpleplot.svg',x,y);
 
+
+xlabel('test x label')
+ylabel('test y label')

@@ -1,12 +1,12 @@
 <svg width="800" height="400">
-<circle cx="-800" cy="-403.316" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="-622.222" cy="-229.991" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="-444.444" cy="-110.703" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="-266.667" cy="-82.3449" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="-88.8889" cy="37.8504" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="88.8889" cy="4.7188" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="266.667" cy="9.62161" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="444.444" cy="174" r="40" stroke="black" stroke-width="3" fill="red"/>
-<circle cx="622.222" cy="218.222" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="0" cy="-54.5271" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="88.8889" cy="-85.9043" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="177.778" cy="-38.1258" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="266.667" cy="51.0955" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="355.556" cy="76.5529" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="444.444" cy="111.33" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="533.333" cy="131.488" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="622.222" cy="202.537" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="711.111" cy="250.577" r="40" stroke="black" stroke-width="3" fill="red"/>
 <circle cx="800" cy="400" r="40" stroke="black" stroke-width="3" fill="red"/>
 </svg>

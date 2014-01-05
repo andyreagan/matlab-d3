@@ -17,7 +17,7 @@ f = fopen(sprintf('%s.js',fname),'w');
 fprintf(f,'<script>\n');
 fprintf(f,'var margin = {top: 20, right: 20, bottom: 30, left: 50},\n');
 fprintf(f,'    width = 960 - margin.left - margin.right,\n');
-fprintf(f,'    height = 500 - margin.top - margin.bottom;\n'); 
+fprintf(f,'    height = 500 - margin.top - margin.bottom;\n');
 fprintf(f,'var x = d3.time.scale()\n');
 fprintf(f,'    .range([0, width]);\n');
 fprintf(f,'var y = d3.scale.linear()\n');
@@ -28,9 +28,7 @@ fprintf(f,'    .orient("bottom");\n');
 fprintf(f,'var yAxis = d3.svg.axis()\n');
 fprintf(f,'    .scale(y)\n');
 fprintf(f,'    .orient("left");\n');
-fprintf(f,'var line = d3.svg.line()\n');
-fprintf(f,'    .x(function(d) { return x(d.x)); })\n');
-fprintf(f,'    .y(function(d) { return y(d.y); });\n');
+
 fprintf(f,'var svg = d3.select("body").append("svg")\n');
 fprintf(f,'    .attr("width", width + margin.left + margin.right)\n');
 fprintf(f,'    .attr("height", height + margin.top + margin.bottom)\n');
@@ -64,19 +62,70 @@ if ~isempty(xlabelStruct.String)
     fprintf(f,'    .style("text-anchor", "end")\n');
     fprintf(f,'    .text("%s");\n',xlabelStruct.String);
 end
-      
+
+
 for i=1:length(objTypes)
     if strcmp(objTypes{i},'line')
         tmpStruct = get(dataObjs(i));
-        xdata = tmpStruct.XData;        
+        xdata = tmpStruct.XData;
         ydata = tmpStruct.YData;
         % save it as a csv
-        csvwrite(sprintf('%s_%02d.csv',fname,i),xdata',ydata');
+        csvwrite(sprintf('%s_%02d.csv',fname,i),[xdata' ydata']);
         disp(tmpStruct.LineStyle)
         % handle lines and markers separately
+        if strcmp(tmpStruct.LineStyle,'-')
+            fprintf(f,'var line = d3.svg.line()\n');
+            fprintf(f,'    .x(function(d) { return x(d.x); })\n');
+            fprintf(f,'    .y(function(d) { return y(d.y); });\n');
+            fprintf(f,'d3.csv("%s_%02d.csv", function(error, data) {\n',fname,i);
+            fprintf(f,'  data.forEach(function(d) {\n');
+            fprintf(f,'    d.x = d.x;\n');
+            fprintf(f,'    d.y = d.y;\n');
+            fprintf(f,'  });\n');
+            
+            fprintf(f,'    x.domain(d3.extent(data, function(d) { return d.x; }));\n');
+            fprintf(f,'    y.domain(d3.extent(data, function(d) { return d.y; }));\n');
+            
+            fprintf(f,'    svg.append("path")\n');
+            fprintf(f,'      .datum(data)\n');
+            fprintf(f,'      .attr("class", "line")\n');
+            fprintf(f,'      .attr("d", line);\n');
+            fprintf(f,'});\n');
+            if ~isempty(ylabelStruct.String)
+                fprintf(f,'svg.append("g")\n');
+                fprintf(f,'    .attr("class", "y axis")\n');
+                fprintf(f,'    .call(yAxis)\n');
+                fprintf(f,'    .append("text")\n');
+                fprintf(f,'    .attr("class", "label")\n');
+                fprintf(f,'    .attr("transform", "rotate(-90)")\n');
+                fprintf(f,'    .attr("y", 6)\n');
+                fprintf(f,'    .attr("dy", ".71em")\n');
+                fprintf(f,'    .style("text-anchor", "end")\n');
+                fprintf(f,'    .text("%s")\n',ylabelStruct.String);
+            end
+            if ~isempty(xlabelStruct.String)
+                fprintf(f,'svg.append("g")\n');
+                fprintf(f,'    .attr("class", "x axis")\n');
+                fprintf(f,'    .attr("transform", "translate(0," + height + ")")\n');
+                fprintf(f,'    .call(xAxis)\n');
+                fprintf(f,'    .append("text")\n');
+                fprintf(f,'    .attr("class", "label")\n');
+                fprintf(f,'    .attr("x", width)\n');
+                fprintf(f,'    .attr("y", -6)\n');
+                fprintf(f,'    .style("text-anchor", "end")\n');
+                fprintf(f,'    .text("%s");\n',xlabelStruct.String);
+            end
+            
+        else if strcmp(tmpStruct.LineStyle,'none')
+                fprintf('not a line');
+            else
+                fprintf('line style not supported');
+            end
+        end
     end
     if strcmp(objTypes{i},'text')
         % draw text object individually
+        % use their matlab location (try to)
     end
 end
 
