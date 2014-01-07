@@ -6,39 +6,29 @@ function fig2d3(h,fname)
 %
 % written by Andy Reagan, 2014
 
+rng('shuffle','twister');
+
 % first, pull out the data
 axesObjs = get(h, 'Children');
 if length(axesObjs) > 1
     error('we only support one plot for now');
-    dataObjs = get(axesObjs{1}, 'Type');
+    % dataObjs = get(axesObjs{1}, 'Type');
 else
     dataObjs = get(axesObjs, 'Children');
 end
 
+tmpfname = sprintf('%s.js.tmp',fname);
+
 objTypes = get(dataObjs, 'Type');
 disp(objTypes);
 
-f = fopen(sprintf('%s.js',fname),'w');
+plotted = zeros(1,length(objTypes));
+
+f = fopen(tmpfname,'w');
 % stuff you should understand first
-fprintf(f,'<script>\n');
-fprintf(f,'var margin = {top: 20, right: 20, bottom: 30, left: 50},\n');
-fprintf(f,'    width = 960 - margin.left - margin.right,\n');
-fprintf(f,'    height = 500 - margin.top - margin.bottom;\n');
-fprintf(f,'var x = d3.scale.linear()\n');
-fprintf(f,'    .range([0, width]);\n');
-fprintf(f,'var y = d3.scale.linear()\n');
-fprintf(f,'    .range([height, 0]);\n');
-fprintf(f,'var xAxis = d3.svg.axis()\n');
-fprintf(f,'    .scale(x)\n');
-fprintf(f,'    .orient("bottom");\n');
-fprintf(f,'var yAxis = d3.svg.axis()\n');
-fprintf(f,'    .scale(y)\n');
-fprintf(f,'    .orient("left");\n');
-fprintf(f,'var svg = d3.select("body").append("svg")\n');
-fprintf(f,'    .attr("width", width + margin.left + margin.right)\n');
-fprintf(f,'    .attr("height", height + margin.top + margin.bottom)\n');
-fprintf(f,'    .append("g")\n');
-fprintf(f,'    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");\n');
+width=800;
+height=500;
+
 
 % grab axis labels quickly
 xlabelStruct = get(get(axesObjs,'XLabel'));
@@ -55,65 +45,70 @@ for i=1:length(objTypes)
         % handle lines and markers separately
         if strcmp(tmpStruct.LineStyle,'-')
             fprintf('making line %d\n',i);
-            fprintf(f,'var line = d3.svg.line()\n');
+            plotted(i) = 1;
+            
+            fprintf(f,'var line%02d = d3.svg.line()\n',i);
             fprintf(f,'    .x(function(d) { return x(d.x); })\n');
-            fprintf(f,'    .y(function(d) { return y(d.y); });\n');
+            fprintf(f,'    .y(function(d) { return y(d.y); })\n');
+            fprintf(f,'    .interpolate("linear");\n');
+            fprintf(f,'d3.csv("%s_%02d.csv", function(error, data) {\n',fname,i);
+            fprintf(f,'  data.forEach(function(d) {\n');
+            fprintf(f,'    d.x = d.x;\n');
+            fprintf(f,'    d.y = d.y;\n');
+            fprintf(f,'  });\n');
+                      
+            fprintf(f,'    svg.append("path")\n');
+            fprintf(f,'      .datum(data)\n');
+            fprintf(f,'      .attr("class", "line%02d")\n',i);
+            fprintf(f,'      .attr("d", line%02d)\n',i);
+            fprintf(f,'      .attr("stroke","blue")\n');
+            fprintf(f,'      .attr("stroke-width",3)\n');
+            fprintf(f,'      .attr("fill","none");\n');
+            
+            fprintf(f,'    data%02d = data;\n',i);
+            
+            fprintf(f,'    if (!--csvLoadsRemaining) loaded();\n');
+            fprintf(f,'});\n');
+        end
+        if strcmp(tmpStruct.LineStyle,'none')
+            fprintf('line %d is not a line, drawing circles\n',i);
+            plotted(i) = 1;
+            
+            fprintf(f,'var line%02d = d3.svg.symbol();\n',i);
             fprintf(f,'d3.csv("%s_%02d.csv", function(error, data) {\n',fname,i);
             fprintf(f,'  data.forEach(function(d) {\n');
             fprintf(f,'    d.x = d.x;\n');
             fprintf(f,'    d.y = d.y;\n');
             fprintf(f,'  });\n');
             
-            fprintf(f,'    x.domain(d3.extent(data, function(d) { return d.x; }));\n');
-            fprintf(f,'    y.domain(d3.extent(data, function(d) { return d.y; }));\n');
             
-            fprintf(f,'    svg.append("path")\n');
-            fprintf(f,'      .datum(data)\n');
-            fprintf(f,'      .attr("class", "line")\n');
-            fprintf(f,'      .attr("d", line)\n');
-            fprintf(f,'      .attr("stroke","blue")\n');
-            fprintf(f,'      .attr("stroke-width",3)\n');
-            fprintf(f,'      .attr("fill","none");\n');
-
-            if ~isempty(ylabelStruct.String)
-                fprintf(f,'svg.append("g")\n');
-                fprintf(f,'    .attr("class", "y axis")\n');
-                fprintf(f,'    .call(yAxis)\n');
-                fprintf(f,'    .append("text")\n');
-                fprintf(f,'    .attr("class", "label")\n');
-                fprintf(f,'    .attr("transform", "rotate(-90)")\n');
-                fprintf(f,'    .attr("y", 6)\n');
-                fprintf(f,'    .attr("dy", ".71em")\n');
-                fprintf(f,'    .style("text-anchor", "end")\n');
-                fprintf(f,'    .text("%s")\n',ylabelStruct.String);
-            end
-            if ~isempty(xlabelStruct.String)
-                fprintf(f,'svg.append("g")\n');
-                fprintf(f,'    .attr("class", "x axis")\n');
-                fprintf(f,'    .attr("transform", "translate(0," + height + ")")\n');
-                fprintf(f,'    .call(xAxis)\n');
-                fprintf(f,'    .append("text")\n');
-                fprintf(f,'    .attr("class", "label")\n');
-                fprintf(f,'    .attr("x", width)\n');
-                fprintf(f,'    .attr("y", -6)\n');
-                fprintf(f,'    .style("text-anchor", "end")\n');
-                fprintf(f,'    .text("%s");\n',xlabelStruct.String);
-            end
+            fprintf(f,'    svg.selectAll(".line%02d")\n',i);
+            fprintf(f,'      .data(data)\n');
+            fprintf(f,'      .enter().append("path")\n');
+            fprintf(f,'      .attr("class", "line%02d")\n',i);
+            fprintf(f,'      .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
+            fprintf(f,'      .attr("d", line%02d);\n',i);
+            
+            fprintf(f,'    data%02d = data;\n',i);
+            
+            fprintf(f,'    if (!--csvLoadsRemaining) loaded();\n');
+            
             fprintf(f,'});\n');
-            
-        else if strcmp(tmpStruct.LineStyle,'none')
-                fprintf('line %d is not a line\n',i);
-            else
-                fprintf('line %d line style not supported\n',i);
-            end
         end
-    end
+    end % if line
     if strcmp(objTypes{i},'text')
         % draw text object individually
         % use their matlab location (try to)
-    end
-end
+    end % if text
+end % for objTypes
+
 
 
 fprintf(f,'</script>\n');
 fclose(f);
+
+f = fopen(sprintf('%s.js',fname),'w');
+d3header(f,width,height);
+fprintf(f,'var csvLoadsRemaining = %d;\n',sum(plotted));
+fclose(f);
+system(sprintf('cat %s >> %s.js; rm %s;',tmpfname,fname,tmpfname));

@@ -9,7 +9,7 @@ y = y_line + randn(size(x));
 plot(x,y_line,'LineStyle','-','Color',0.7*ones(1,3));
 hold on;
 plot(x,y,'LineStyle','none','Marker','o','MarkerSize',5,'MarkerFaceColor','b','MarkerEdgeColor','k');
-
+plot(x,2*randn(size(x)),'r');
 % can't do this
 % saveas(1,'simpleplot.svg');
 
