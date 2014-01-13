@@ -1,4 +1,4 @@
-function d3main(f,width,height,plotted)
+function d3main(f,width,height,plotted,xlabel,ylabel)
 
 fprintf(f,'function loaded(figure) {\n');
 fprintf(f,'\n');
@@ -87,7 +87,7 @@ for i=1:length(plotted)
         fprintf(f,'   .datum(data%02d)\n',i);
         fprintf(f,'   .attr("class", "line%02d")\n',i);
         fprintf(f,'   .attr("d", line%02d)\n',i);
-        fprintf(f,'   .attr("stroke","blue")\n');
+        fprintf(f,'   .attr("stroke","red")\n');
         fprintf(f,'   .attr("stroke-width",3)\n');
         fprintf(f,'   .attr("fill","none");\n');
         fprintf(f,'\n');
@@ -99,11 +99,42 @@ for i=1:length(plotted)
         fprintf(f,'   .data(data%02d)\n',i);
         fprintf(f,'   .enter().append("path")\n');
         fprintf(f,'   .attr("class", "line%02d")\n',i);
+        fprintf(f,'   .attr("stroke","blue")\n');
         fprintf(f,'   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
         fprintf(f,'   .attr("d", line%02d);\n',i);
         fprintf(f,'\n');
     end
 end
+
+fprintf(f,'    canvas.append("text")\n');
+fprintf(f,'        .text("%s")\n',xlabel);
+fprintf(f,'        .attr("class", "axes-text")\n');
+fprintf(f,'        .attr("x", %g)\n',width/2);
+fprintf(f,'        .attr("y", %g)\n',height);
+fprintf(f,'        .attr("font-size", "12.0px")\n');
+fprintf(f,'        .attr("fill", "#000000")\n');
+fprintf(f,'        .attr("transform", "rotate(-0.0," + (height + margin.bottom + margin.top - 14) + "," + (figheight - 0.0) + ")")\n');
+fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
+    
+fprintf(f,'    canvas.append("text")\n');
+fprintf(f,'        .text("%s")\n',ylabel);
+fprintf(f,'        .attr("class", "axes-text")\n');
+fprintf(f,'        .attr("x", 10.0)\n');
+fprintf(f,'        .attr("y", (height + margin.bottom + margin.top)/2)\n');
+fprintf(f,'        .attr("font-size", "12.0px")\n');
+fprintf(f,'        .attr("fill", "#000000")\n');
+fprintf(f,'        .attr("transform", "rotate(-90.0,10.0," + ((height + margin.bottom + margin.top)/2) + ")")\n');
+fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
+    
+%     canvas.append("text")
+%         .text("Matlab Plot Rendered in D3!")
+%         .attr("class", "axes-text")
+%         .attr("x", 246.0)
+%         .attr("y", figheight - 293.555555556)
+%         .attr("font-size", "14.0px")
+%         .attr("fill", "#000000")
+%         .attr("transform", "rotate(-0.0,246.0," + (figheight - 293.555555556) + ")")
+%         .attr("style", "text-anchor: middle;")
 
 fprintf(f,'    function zoomed() {\n');
 fprintf(f,'        d3.select(".x.axis").call(xAxis);\n');

@@ -26,7 +26,7 @@ plotted = zeros(1,length(objTypes));
 
 f = fopen(tmpfname1,'w');
 % stuff you should understand first
-width=800;
+width=600;
 height=500;
 xlims = [0,1];
 ylims = [0,1];
@@ -67,7 +67,7 @@ end % for objTypes
 % includ the bulk of the d3
 tmpfname2 = sprintf('%s.js.tmp2',fname);
 f = fopen(tmpfname2,'w');
-d3main(f,width,height,plotted);
+d3main(f,width,height,plotted,xlabelStruct.String,ylabelStruct.String);
 fclose(f);
 
 

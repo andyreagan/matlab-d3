@@ -1,0 +1,457 @@
+<html>
+<head>
+<title>My First Plot</title>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+
+<img src="simpleplot.png" width="600">
+
+<!-- d3 goes here -->
+<div id="figure01"></div>
+
+<script>
+var csvLoadsRemaining = 15;
+d3.csv("test_01.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data01 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_02.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data02 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_03.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data03 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_04.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data04 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_05.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data05 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_06.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data06 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_07.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data07 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_08.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data08 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_09.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data09 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_10.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data10 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_11.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data11 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_12.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data12 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_13.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data13 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_14.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data14 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+d3.csv("test_15.csv", function(error, data) {
+  data.forEach(function(d) {
+    d.x = d.x;
+    d.y = d.y;
+  });
+    data15 = data;
+    if (!--csvLoadsRemaining) loaded(d3.select("#figure01"));
+});
+function loaded(figure) {
+
+var margin = {top: 20, right: 20, bottom: 50, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom,
+    figwidth = .775*width,
+    figheight = .775*height;
+
+var canvas = figure.append("svg:svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("class","canvas")
+    .append("g");
+    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// create the x and y axis
+var x = d3.scale.linear()
+    .domain([0, 2])
+    .range([0, width]);
+var y = d3.scale.linear()
+    .domain([-4, 12])
+    .range([height, 0]);
+
+// zoom object for the axes
+var zoom = d3.behavior.zoom()
+    .x(x)
+    .y(y)
+    .on("zoom",zoomed);
+
+// create the axes themselves
+var axes = canvas.append("g")
+    .attr("transform", "translate(" + (0.125 * figwidth) + "," +
+       ((1 - 0.125 - 0.775) * figheight) + ")")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "main")
+    .call(zoom);
+
+// create the axes background
+axes.append("svg:rect")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "bg")
+    .attr("fill", "#FCFCFC");
+
+// axes creation functions
+var create_xAxis = function() {
+    return d3.svg.axis()
+    .scale(x)
+    .orient("bottom"); }
+var create_yAxis = function() {
+    return d3.svg.axis()
+    .scale(y)
+    .orient("left"); }
+
+// draw the axes
+var yAxis = create_yAxis();
+
+axes.append("g")
+  .attr("class", "y axis")
+  .attr("transform", "(0,0)")
+  .call(yAxis);
+
+var xAxis = create_xAxis();
+
+axes.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(xAxis);
+
+// create the clip boundary
+
+// now something else
+var unclipped_axes = axes;
+ 
+var line01 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data01)
+   .attr("class", "line01")
+   .attr("d", line01)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line02 = d3.svg.symbol();
+
+canvas.selectAll(".line02")
+   .data(data02)
+   .enter().append("path")
+   .attr("class", "line02")
+   .attr("stroke","blue")
+   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+   .attr("d", line02);
+
+var line03 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data03)
+   .attr("class", "line03")
+   .attr("d", line03)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line04 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data04)
+   .attr("class", "line04")
+   .attr("d", line04)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line05 = d3.svg.symbol();
+
+canvas.selectAll(".line05")
+   .data(data05)
+   .enter().append("path")
+   .attr("class", "line05")
+   .attr("stroke","blue")
+   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+   .attr("d", line05);
+
+var line06 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data06)
+   .attr("class", "line06")
+   .attr("d", line06)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line07 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data07)
+   .attr("class", "line07")
+   .attr("d", line07)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line08 = d3.svg.symbol();
+
+canvas.selectAll(".line08")
+   .data(data08)
+   .enter().append("path")
+   .attr("class", "line08")
+   .attr("stroke","blue")
+   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+   .attr("d", line08);
+
+var line09 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data09)
+   .attr("class", "line09")
+   .attr("d", line09)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line10 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data10)
+   .attr("class", "line10")
+   .attr("d", line10)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line11 = d3.svg.symbol();
+
+canvas.selectAll(".line11")
+   .data(data11)
+   .enter().append("path")
+   .attr("class", "line11")
+   .attr("stroke","blue")
+   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+   .attr("d", line11);
+
+var line12 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data12)
+   .attr("class", "line12")
+   .attr("d", line12)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line13 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data13)
+   .attr("class", "line13")
+   .attr("d", line13)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+var line14 = d3.svg.symbol();
+
+canvas.selectAll(".line14")
+   .data(data14)
+   .enter().append("path")
+   .attr("class", "line14")
+   .attr("stroke","blue")
+   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+   .attr("d", line14);
+
+var line15 = d3.svg.line()
+  .x(function(d) { return x(d.x); })
+  .y(function(d) { return y(d.y); })
+  .interpolate("linear");
+
+canvas.append("path")
+   .datum(data15)
+   .attr("class", "line15")
+   .attr("d", line15)
+   .attr("stroke","red")
+   .attr("stroke-width",3)
+   .attr("fill","none");
+
+    canvas.append("text")
+        .text("test x label")
+        .attr("class", "axes-text")
+        .attr("x", 300)
+        .attr("y", 500)
+        .attr("font-size", "12.0px")
+        .attr("fill", "#000000")
+        .attr("transform", "rotate(-0.0," + (height + margin.bottom + margin.top - 14) + "," + (figheight - 0.0) + ")")
+        .attr("style", "text-anchor: middle;")
+    canvas.append("text")
+        .text("test y label")
+        .attr("class", "axes-text")
+        .attr("x", 10.0)
+        .attr("y", (height + margin.bottom + margin.top)/2)
+        .attr("font-size", "12.0px")
+        .attr("fill", "#000000")
+        .attr("transform", "rotate(-90.0,10.0," + ((height + margin.bottom + margin.top)/2) + ")")
+        .attr("style", "text-anchor: middle;")
+    function zoomed() {
+        d3.select(".x.axis").call(xAxis);
+        d3.select(".y.axis").call(yAxis);
+
+        canvas.select(".line01")
+          .attr("d",line01(data01));
+
+        canvas.selectAll(".line02")
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+        canvas.select(".line03")
+          .attr("d",line03(data03));
+
+        canvas.select(".line04")
+          .attr("d",line04(data04));
+
+        canvas.selectAll(".line05")
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+        canvas.select(".line06")
+          .attr("d",line06(data06));
+
+        canvas.select(".line07")
+          .attr("d",line07(data07));
+
+        canvas.selectAll(".line08")
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+        canvas.select(".line09")
+          .attr("d",line09(data09));
+
+        canvas.select(".line10")
+          .attr("d",line10(data10));
+
+        canvas.selectAll(".line11")
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+        canvas.select(".line12")
+          .attr("d",line12(data12));
+
+        canvas.select(".line13")
+          .attr("d",line13(data13));
+
+        canvas.selectAll(".line14")
+          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+        canvas.select(".line15")
+          .attr("d",line15(data15));
+
+     };
+};
+</script>
+
+</body>
+</html>
