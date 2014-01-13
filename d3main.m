@@ -75,37 +75,53 @@ fprintf(f,'\n');
 fprintf(f,'// now something else\n');
 fprintf(f,'var unclipped_axes = axes;\n');
 fprintf(f,' \n');
-fprintf(f,'var line01 = d3.svg.line()\n');
-fprintf(f,'  .x(function(d) { return x(d.x); })\n');
-fprintf(f,'  .y(function(d) { return y(d.y); })\n');
-fprintf(f,'  .interpolate("linear");\n');
-fprintf(f,'\n');
-fprintf(f,'canvas.append("path")\n');
-fprintf(f,'   .datum(data01)\n');
-fprintf(f,'   .attr("class", "line01")\n');
-fprintf(f,'   .attr("d", line01)\n');
-fprintf(f,'   .attr("stroke","blue")\n');
-fprintf(f,'   .attr("stroke-width",3)\n');
-fprintf(f,'   .attr("fill","none");\n');
-fprintf(f,'\n');
-fprintf(f,'var line02 = d3.svg.symbol();\n');
-fprintf(f,'\n');
-fprintf(f,'canvas.selectAll(".line02")\n');
-fprintf(f,'   .data(data02)\n');
-fprintf(f,'   .enter().append("path")\n');
-fprintf(f,'   .attr("class", "line02")\n');
-fprintf(f,'   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
-fprintf(f,'   .attr("d", line02);\n');
-fprintf(f,'\n');
+
+for i=1:length(plotted)
+    if plotted(i) == 1
+        fprintf(f,'var line%02d = d3.svg.line()\n',i);
+        fprintf(f,'  .x(function(d) { return x(d.x); })\n');
+        fprintf(f,'  .y(function(d) { return y(d.y); })\n');
+        fprintf(f,'  .interpolate("linear");\n');
+        fprintf(f,'\n');
+        fprintf(f,'canvas.append("path")\n');
+        fprintf(f,'   .datum(data%02d)\n',i);
+        fprintf(f,'   .attr("class", "line%02d")\n',i);
+        fprintf(f,'   .attr("d", line%02d)\n',i);
+        fprintf(f,'   .attr("stroke","blue")\n');
+        fprintf(f,'   .attr("stroke-width",3)\n');
+        fprintf(f,'   .attr("fill","none");\n');
+        fprintf(f,'\n');
+    end
+    if plotted(i) == .01
+        fprintf(f,'var line%02d = d3.svg.symbol();\n',i);
+        fprintf(f,'\n');
+        fprintf(f,'canvas.selectAll(".line%02d")\n',i);
+        fprintf(f,'   .data(data%02d)\n',i);
+        fprintf(f,'   .enter().append("path")\n');
+        fprintf(f,'   .attr("class", "line%02d")\n',i);
+        fprintf(f,'   .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
+        fprintf(f,'   .attr("d", line%02d);\n',i);
+        fprintf(f,'\n');
+    end
+end
+
 fprintf(f,'    function zoomed() {\n');
 fprintf(f,'        d3.select(".x.axis").call(xAxis);\n');
 fprintf(f,'        d3.select(".y.axis").call(yAxis);\n');
 fprintf(f,'\n');
-fprintf(f,'        canvas.select(".line01")\n');
-fprintf(f,'          .attr("d",line01(data01));\n');
-fprintf(f,'\n');
-fprintf(f,'        canvas.selectAll(".line02")\n');
-fprintf(f,'          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
+
+for i=1:length(plotted)
+    if plotted(i) == 1
+        fprintf(f,'        canvas.select(".line%02d")\n',i);
+        fprintf(f,'          .attr("d",line%02d(data%02d));\n',i,i);
+        fprintf(f,'\n');
+    end
+    if plotted(i) == .01
+        fprintf(f,'        canvas.selectAll(".line%02d")\n',i);
+        fprintf(f,'          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
+
+    end
+end
 fprintf(f,'     };\n');
 fprintf(f,'};\n');
 fprintf(f,'</script>\n');
