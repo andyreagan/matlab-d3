@@ -20,8 +20,7 @@ function d3header(f,width,height)
 % fprintf(f,'    .append("g")\n');
 % fprintf(f,'    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");\n');
 
-fprintf(f,'<script>\n');
-fprintf(f,'\n');
+
 fprintf(f,'var margin = {top: 20, right: 20, bottom: 30, left: 50},\n');
 fprintf(f,'    width = %d - margin.left - margin.right,\n',width);
 fprintf(f,'    height = %d - margin.top - margin.bottom;\n',height);
