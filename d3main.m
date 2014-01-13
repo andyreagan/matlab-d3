@@ -2,18 +2,16 @@ function d3main(f,width,height,plotted,xlabel,ylabel)
 
 fprintf(f,'function loaded(figure) {\n');
 fprintf(f,'\n');
-fprintf(f,'var margin = {top: 20, right: 20, bottom: 50, left: 50},\n');
-fprintf(f,'    width = %g - margin.left - margin.right,\n',width);
-fprintf(f,'    height = %g - margin.top - margin.bottom,\n',height);
-fprintf(f,'    figwidth = .775*width,\n');
-fprintf(f,'    figheight = .775*height;\n');
+fprintf(f,'var margin = {top: 0, right: 0, bottom: 0, left: 0},\n');
+fprintf(f,'    figwidth = %g - margin.left - margin.right,\n',width);
+fprintf(f,'    figheight = %g - margin.top - margin.bottom,\n',height);
+fprintf(f,'    width = .775*figwidth,\n');
+fprintf(f,'    height = .775*figheight;\n');
 fprintf(f,'\n');
 fprintf(f,'var canvas = figure.append("svg:svg")\n');
-fprintf(f,'    .attr("width", width + margin.left + margin.right)\n');
-fprintf(f,'    .attr("height", height + margin.top + margin.bottom)\n');
+fprintf(f,'    .attr("width",figwidth)\n');
+fprintf(f,'    .attr("height",figheight)\n');
 fprintf(f,'    .attr("class","canvas")\n');
-fprintf(f,'    .append("g");\n');
-fprintf(f,'    //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");\n');
 fprintf(f,'\n');
 fprintf(f,'// create the x and y axis\n');
 fprintf(f,'var x = d3.scale.linear()\n');
@@ -71,10 +69,19 @@ fprintf(f,'  .attr("transform", "translate(0," + height + ")")\n');
 fprintf(f,'  .call(xAxis);\n');
 fprintf(f,'\n');
 fprintf(f,'// create the clip boundary\n');
+fprintf(f,'var clip = axes.append("svg:clipPath")\n');
+fprintf(f,'  .attr("id","clip")\n');
+fprintf(f,'  .append("svg:rect")\n');
+fprintf(f,'  .attr("x",0)\n');
+fprintf(f,'  .attr("y",0)\n');
+fprintf(f,'  .attr("width",width)\n');
+fprintf(f,'  .attr("height",height);\n');
 fprintf(f,'\n');
 fprintf(f,'// now something else\n');
 fprintf(f,'var unclipped_axes = axes;\n');
 fprintf(f,' \n');
+fprintf(f,'axes = axes.append("g")\n');
+fprintf(f,'  .attr("clip-path","url(#clip)");\n');
 
 for i=1:length(plotted)
     if plotted(i) == 1
@@ -83,7 +90,7 @@ for i=1:length(plotted)
         fprintf(f,'  .y(function(d) { return y(d.y); })\n');
         fprintf(f,'  .interpolate("linear");\n');
         fprintf(f,'\n');
-        fprintf(f,'canvas.append("path")\n');
+        fprintf(f,'axes.append("path")\n');
         fprintf(f,'   .datum(data%02d)\n',i);
         fprintf(f,'   .attr("class", "line%02d")\n',i);
         fprintf(f,'   .attr("d", line%02d)\n',i);
@@ -95,7 +102,7 @@ for i=1:length(plotted)
     if plotted(i) == .01
         fprintf(f,'var line%02d = d3.svg.symbol();\n',i);
         fprintf(f,'\n');
-        fprintf(f,'canvas.selectAll(".line%02d")\n',i);
+        fprintf(f,'axes.selectAll(".line%02d")\n',i);
         fprintf(f,'   .data(data%02d)\n',i);
         fprintf(f,'   .enter().append("path")\n');
         fprintf(f,'   .attr("class", "line%02d")\n',i);
@@ -109,21 +116,21 @@ end
 fprintf(f,'    canvas.append("text")\n');
 fprintf(f,'        .text("%s")\n',xlabel);
 fprintf(f,'        .attr("class", "axes-text")\n');
-fprintf(f,'        .attr("x", %g)\n',width/2);
-fprintf(f,'        .attr("y", %g)\n',height);
+fprintf(f,'        .attr("x",width/2+figwidth-width)\n');
+fprintf(f,'        .attr("y",(figheight-height)/2+height)\n');
 fprintf(f,'        .attr("font-size", "12.0px")\n');
 fprintf(f,'        .attr("fill", "#000000")\n');
-fprintf(f,'        .attr("transform", "rotate(-0.0," + (height + margin.bottom + margin.top - 14) + "," + (figheight - 0.0) + ")")\n');
+fprintf(f,'        .attr("transform", "rotate(-0.0," + (width/2+figwidth-width) + "," + ((figheight-height)/2+height) + ")")\n');
 fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
     
 fprintf(f,'    canvas.append("text")\n');
 fprintf(f,'        .text("%s")\n',ylabel);
 fprintf(f,'        .attr("class", "axes-text")\n');
-fprintf(f,'        .attr("x", 10.0)\n');
-fprintf(f,'        .attr("y", (height + margin.bottom + margin.top)/2)\n');
+fprintf(f,'        .attr("x",(figwidth-width)/2)\n');
+fprintf(f,'        .attr("y", height/2)\n');
 fprintf(f,'        .attr("font-size", "12.0px")\n');
 fprintf(f,'        .attr("fill", "#000000")\n');
-fprintf(f,'        .attr("transform", "rotate(-90.0,10.0," + ((height + margin.bottom + margin.top)/2) + ")")\n');
+fprintf(f,'        .attr("transform", "rotate(-90.0," + ((figwidth-width)/2) + "," + (height/2) + ")")\n');
 fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
     
 %     canvas.append("text")
@@ -143,12 +150,12 @@ fprintf(f,'\n');
 
 for i=1:length(plotted)
     if plotted(i) == 1
-        fprintf(f,'        canvas.select(".line%02d")\n',i);
+        fprintf(f,'        axes.select(".line%02d")\n',i);
         fprintf(f,'          .attr("d",line%02d(data%02d));\n',i,i);
         fprintf(f,'\n');
     end
     if plotted(i) == .01
-        fprintf(f,'        canvas.selectAll(".line%02d")\n',i);
+        fprintf(f,'        axes.selectAll(".line%02d")\n',i);
         fprintf(f,'          .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })\n');
 
     end
