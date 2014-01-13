@@ -116,21 +116,21 @@ end
 fprintf(f,'    canvas.append("text")\n');
 fprintf(f,'        .text("%s")\n',xlabel);
 fprintf(f,'        .attr("class", "axes-text")\n');
-fprintf(f,'        .attr("x",width/2+figwidth-width)\n');
-fprintf(f,'        .attr("y",(figheight-height)/2+height)\n');
+fprintf(f,'        .attr("x",width/2+(figwidth-width)/2)\n');
+fprintf(f,'        .attr("y",3*(figheight-height)/4+height)+10\n');
 fprintf(f,'        .attr("font-size", "12.0px")\n');
 fprintf(f,'        .attr("fill", "#000000")\n');
-fprintf(f,'        .attr("transform", "rotate(-0.0," + (width/2+figwidth-width) + "," + ((figheight-height)/2+height) + ")")\n');
+fprintf(f,'        .attr("transform", "rotate(-0.0," + (width/2+(figwidth-width)/2) + "," + (3*(figheight-height)/4+height+10) + ")")\n');
 fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
     
 fprintf(f,'    canvas.append("text")\n');
 fprintf(f,'        .text("%s")\n',ylabel);
 fprintf(f,'        .attr("class", "axes-text")\n');
-fprintf(f,'        .attr("x",(figwidth-width)/2)\n');
-fprintf(f,'        .attr("y", height/2)\n');
+fprintf(f,'        .attr("x",(figwidth-width)/4)\n');
+fprintf(f,'        .attr("y", figheight/2)\n');
 fprintf(f,'        .attr("font-size", "12.0px")\n');
 fprintf(f,'        .attr("fill", "#000000")\n');
-fprintf(f,'        .attr("transform", "rotate(-90.0," + ((figwidth-width)/2) + "," + (height/2) + ")")\n');
+fprintf(f,'        .attr("transform", "rotate(-90.0," + ((figwidth-width)/4) + "," + (figheight/2) + ")")\n');
 fprintf(f,'        .attr("style", "text-anchor: middle;")\n');
     
 %     canvas.append("text")
