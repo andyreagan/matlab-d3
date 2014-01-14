@@ -7,6 +7,11 @@ function fig2d3(h,fname)
 % written by Andy Reagan, 2014
 
 rng('shuffle','twister');
+symbols = ['a':'z' 'A':'Z' '0':'9'];
+MAX_ST_LENGTH = 50;
+stLength = randi(MAX_ST_LENGTH);
+nums = randi(numel(symbols),[1 stLength]);
+figure_hash = symbols (nums);
 
 % first, pull out the data
 axesObjs = get(h, 'Children');
@@ -35,6 +40,14 @@ ylims = [0,1];
 xlabelStruct = get(get(axesObjs,'XLabel'));
 ylabelStruct = get(get(axesObjs,'YLabel'));
 
+num_plots = 1;
+plot_hash_list = cell(num_plots,1);
+
+stLength = randi(MAX_ST_LENGTH);
+nums = randi(numel(symbols),[1 stLength]);
+plot_hash = symbols (nums);
+plot_hash_list{1} = plot_hash;
+
 for i=1:length(objTypes)
     if strcmp(objTypes{i},'line')
         tmpStruct = get(dataObjs(i));
@@ -43,18 +56,18 @@ for i=1:length(objTypes)
         xlims = [min([xlims(1) xdata]) max([xlims(2) xdata])]; 
         ylims = [min([ylims(1) ydata]) max([ylims(2) ydata])]; 
         % save it as a csv
-        csvwritewh(sprintf('%s_%02d.csv',fname,i),[xdata' ydata'],'x,y');
+        csvwrite(sprintf('%s_%s%02d.csv',fname,figure_hash,i),[xdata' ydata']);
         
         % handle lines and markers separately
         if strcmp(tmpStruct.LineStyle,'-')
             fprintf('making line %d\n',i);
             plotted(i) = 1;
-            d3loadData(f,fname,i)
+            d3loadData(f,fname,i,figure_hash,plot_hash)
         end
         if strcmp(tmpStruct.LineStyle,'none')
             fprintf('line %d is not a line, drawing circles\n',i);
             plotted(i) = .01;  
-            d3loadData(f,fname,i)
+            d3loadData(f,fname,i,figure_hash,plot_hash)
         end
     end % if line
     if strcmp(objTypes{i},'text')
@@ -67,12 +80,12 @@ end % for objTypes
 % includ the bulk of the d3
 tmpfname2 = sprintf('%s.js.tmp2',fname);
 f = fopen(tmpfname2,'w');
-d3main(f,width,height,plotted,xlabelStruct.String,ylabelStruct.String);
+d3main(f,width,height,plotted,xlabelStruct.String,ylabelStruct.String,figure_hash,plot_hash);
 fclose(f);
 
 
 f = fopen(sprintf('%s.js',fname),'w');
-fprintf(f,'<div id="figure01"></div>\n\n');
+fprintf(f,'<div id="figure%s"></div>\n\n',figure_hash);
 fprintf(f,'<script>\n');
 fprintf(f,'var csvLoadsRemaining = %d;\n',sum(floor(plotted))+sum(100*(plotted-floor(plotted))));
 fclose(f);
