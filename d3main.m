@@ -137,8 +137,8 @@ fprintf(f,'        .attr("transform", "rotate(-90.0," + ((figwidth%s-width%s)/4)
 fprintf(f,'        .attr("style", "text-anchor: middle;");\n');
 
 fprintf(f,'    function zoomed%s() {\n',plot_hash);
-fprintf(f,'        d3.select(".x%s.axis").call(xAxis%s);\n',plot_hash,plot_hash);
-fprintf(f,'        d3.select(".y%s.axis").call(yAxis%s);\n',plot_hash,plot_hash);
+fprintf(f,'        d3.select(".x.%s.axis").call(xAxis%s);\n',plot_hash,plot_hash);
+fprintf(f,'        d3.select(".y.%s.axis").call(yAxis%s);\n',plot_hash,plot_hash);
 fprintf(f,'\n');
 
 for i=1:length(plotted)
