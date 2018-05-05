@@ -1,0 +1,12 @@
+<svg width="800" height="400">
+<circle cx="0" cy="18.4153" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="88.8889" cy="70.7356" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="177.778" cy="-59.6331" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="266.667" cy="60.8573" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="355.556" cy="61.5638" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="444.444" cy="32.8887" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="533.333" cy="99.6244" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="622.222" cy="174.901" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="711.111" cy="348.521" r="40" stroke="black" stroke-width="3" fill="red"/>
+<circle cx="800" cy="400" r="40" stroke="black" stroke-width="3" fill="red"/>
+</svg>
